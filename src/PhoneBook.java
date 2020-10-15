@@ -83,7 +83,7 @@ public class PhoneBook {
         for (int i = 0; i < userCred.length; i++) {
             System.out.println(TERMINAL_PROMPTER[i]);
             String s = SCANNER.nextLine().trim();
-            userCred[i] = s.substring(0, 1).toUpperCase() + s.substring(1);;
+            userCred[i] = s.substring(0, 1).toUpperCase() + s.substring(1);
         }
 
         return createFullName(userCred);
@@ -122,10 +122,6 @@ public class PhoneBook {
         return false;
     }
 
-    public static String formatName(String name) {
-        return "";
-    }
-
     public static String formatPhoneNumber(String number) {
         String phoneClean = number.replaceAll("[\\D]", "");
         if (phoneClean.length() == 10) {
@@ -156,7 +152,11 @@ public class PhoneBook {
     }
 
     public static void list(String[][] book) {
-        System.out.println(Arrays.deepToString(book));
+        for (String[] user : book) {
+            if (user != null) {
+                System.out.printf("%s: %s\n", user[0], user[1]);
+            }
+        }
     }
 
     private static void logInfo(String info) {
