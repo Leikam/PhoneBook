@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 public class PhoneBook {
 
+    public static final String STRING_DIVIDER = ",";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -21,10 +22,10 @@ public class PhoneBook {
 
         // Предзаполняем книжку
         add(phoneBook, "Тарковский Игорь Николаевич", formatPhoneNumber("89650157766"));
-        add(phoneBook, "Березянко Екатерина Сергеевна", formatPhoneNumber("+79608003652"));
-        add(phoneBook, "Тополева Ольга Федоровна", formatPhoneNumber("81236547788"));
-        add(phoneBook, "А Б В", formatPhoneNumber("01112223344"));
-        add(phoneBook, "Г Д Е", formatPhoneNumber("21112223344"));
+        add(phoneBook, "Ыть Екатерина Сергеевна", formatPhoneNumber("+79608003652"));
+        add(phoneBook, "Бычок Ольга Федоровна", formatPhoneNumber("81236547788"));
+        add(phoneBook, "Алмазов Б В", formatPhoneNumber("01112223344"));
+        add(phoneBook, "Януш Д Е", formatPhoneNumber("21112223344"));
 
 
         String userFullName;
@@ -151,12 +152,26 @@ public class PhoneBook {
         totalRecords++;
     }
 
+    /**
+     * Печатаем книгу
+     */
     public static void list(String[][] book) {
+
+        /* Собираем строку из имен, так проще получить массив без сложных структур */
+        String names = "";
         for (String[] user : book) {
             if (user != null) {
-                System.out.printf("%s: %s\n", user[0], user[1]);
+                names += user[0] + STRING_DIVIDER;
             }
         }
+        String[] namesArray = names.split(STRING_DIVIDER);
+
+        Arrays.sort(namesArray);
+
+        for (String name : namesArray) {
+            System.out.printf("%s: %s\n", name, getPhoneNumberByFullName(book, name));
+        }
+
     }
 
     private static void logInfo(String info) {
