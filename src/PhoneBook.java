@@ -20,11 +20,11 @@ public class PhoneBook {
     public static void main(String[] args) {
 
         // Предзаполняем книжку
-        add(phoneBook, "Тарковский Игорь Николаевич", "89650157766");
-        add(phoneBook, "Березянко Екатерина Сергеевна", "+79608003652");
-        add(phoneBook, "Тополева Ольга Федоровна", "81236547788");
-        add(phoneBook, "А Б В", "01112223344");
-        add(phoneBook, "Г Д Е", "21112223344");
+        add(phoneBook, "Тарковский Игорь Николаевич", formatPhoneNumber("89650157766"));
+        add(phoneBook, "Березянко Екатерина Сергеевна", formatPhoneNumber("+79608003652"));
+        add(phoneBook, "Тополева Ольга Федоровна", formatPhoneNumber("81236547788"));
+        add(phoneBook, "А Б В", formatPhoneNumber("01112223344"));
+        add(phoneBook, "Г Д Е", formatPhoneNumber("21112223344"));
 
 
         String userFullName;
@@ -42,12 +42,20 @@ public class PhoneBook {
 
         if (phone == null) {
             System.out.println("Введите номер телефона:");
-            phone = SCANNER.nextLine();
+
+            /* Читаем номер телефона пока не введется соответствующий нашим высоким стандартам (> 10 && < 11) */
+            do {
+                phone = cleanPhoneNumber(SCANNER.nextLine());
+            }
+            while (!checkPhoneNumber(phone));
+
             String phoneFormatted = formatPhoneNumber(phone);
+
+            logInfo(phoneFormatted);
 
             /* Создаем новый массив, в 2 раза большего размера */
             if (phoneBook.length == totalRecords) {
-                logInfo("Телефонная книга заканчивается, приклеиваем новые странички.");
+                logInfo("Телефонная книга заканчивается.. приклеиваем новые странички.");
                 phoneBook = Arrays.copyOf(phoneBook, Math.min(totalRecords << 1, Integer.MAX_VALUE));
             }
 
@@ -75,7 +83,7 @@ public class PhoneBook {
         for (int i = 0; i < userCred.length; i++) {
             System.out.println(TERMINAL_PROMPTER[i]);
             String s = SCANNER.nextLine().trim();
-            userCred[i] = s;
+            userCred[i] = s.substring(0, 1).toUpperCase() + s.substring(1);;
         }
 
         return createFullName(userCred);
@@ -85,7 +93,22 @@ public class PhoneBook {
         return String.format("%s %s %s", cred[0], cred[1], cred[2]).trim();
     }
 
-    public static boolean checkPhoneNumber(String phoneNumber) {
+    /**
+     * Чистим номер от мусора
+     */
+    public static String cleanPhoneNumber(String number) {
+        return number.replaceAll("[\\D]", "");
+    }
+
+    /**
+     * Принимаем уже очищенный номер, состоящий из одних цифр
+     */
+    public static boolean checkPhoneNumber(String cleanPhoneNumber) {
+        if (cleanPhoneNumber.length() < 10 || cleanPhoneNumber.length() > 11) {
+            logError("Неправильный номер!");
+            return false;
+        }
+
         return true;
     }
 
@@ -104,7 +127,19 @@ public class PhoneBook {
     }
 
     public static String formatPhoneNumber(String number) {
-        return "";
+        String phoneClean = number.replaceAll("[\\D]", "");
+        if (phoneClean.length() == 10) {
+            phoneClean = "7" + phoneClean;
+        } else if ('8' == phoneClean.charAt(0)) {
+            phoneClean = "7" + phoneClean.substring(1);
+        }
+
+        return "+" +
+               phoneClean.substring(0, 1) + " " +
+               phoneClean.substring(1, 4) + " " +
+               phoneClean.substring(4, 7) + " " +
+               phoneClean.substring(7, 9) + " " +
+               phoneClean.substring(9);
     }
 
     /**
