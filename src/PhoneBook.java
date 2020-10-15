@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class PhoneBook {
@@ -14,7 +15,7 @@ public class PhoneBook {
     public static final Scanner SCANNER = new Scanner(System.in);
 
     public static String[][] phoneBook = new String[5][2];
-    public static int index;
+    public static int totalRecords;
 
     public static void main(String[] args) {
 
@@ -23,6 +24,7 @@ public class PhoneBook {
         add(phoneBook, "Березянко Екатерина Сергеевна", "+79608003652");
         add(phoneBook, "Тополева Ольга Федоровна", "81236547788");
         add(phoneBook, "А Б В", "01112223344");
+        add(phoneBook, "Г Д Е", "21112223344");
 
 
         String userFullName;
@@ -33,8 +35,39 @@ public class PhoneBook {
         /* проверяем на формат: 3 слова, эвристику на тип слова делать пока не будем ;) */
         while(!checkName(userFullName));
 
-        System.out.print(userFullName);
-        
+        logInfo("\n" + userFullName + "\n");
+
+        /* проверяем есть ли такая птица в нашей книге */
+        String phone = getPhoneNumberByFullName(phoneBook, userFullName);
+
+        if (phone == null) {
+            System.out.println("Введите номер телефона:");
+            phone = SCANNER.nextLine();
+            String phoneFormatted = formatPhoneNumber(phone);
+
+            /* Создаем новый массив, в 2 раза большего размера */
+            if (phoneBook.length == totalRecords) {
+                logInfo("Телефонная книга заканчивается, приклеиваем новые странички.");
+                phoneBook = Arrays.copyOf(phoneBook, Math.min(totalRecords << 1, Integer.MAX_VALUE));
+            }
+
+            add(phoneBook, userFullName, phoneFormatted);
+
+            list(phoneBook);
+
+        } else {
+            logInfo(String.format("Пользователь найден. Номер телефона: %s", phone));
+        }
+    }
+
+    private static String getPhoneNumberByFullName(String[][] phoneBook, String userFullName) {
+        for (String[] userRow : phoneBook) {
+            if (userFullName.equals(userRow[0])) {
+                return userRow[1];
+            }
+        }
+
+        return null;
     }
 
     private static String promptUserFullName() {
@@ -74,14 +107,21 @@ public class PhoneBook {
         return "";
     }
 
+    /**
+     * Добавление записи в книгу
+     */
     public static void add(String[][] book, String name, String number) {
-        book[index][0] = name;
-        book[index][1] = number;
-        index++;
+        if (book[totalRecords] == null) {
+            book[totalRecords] = new String[2];
+        }
+        book[totalRecords][0] = name;
+        book[totalRecords][1] = number;
+
+        totalRecords++;
     }
 
     public static void list(String[][] book) {
-        //print phone book
+        System.out.println(Arrays.deepToString(book));
     }
 
     private static void logInfo(String info) {
