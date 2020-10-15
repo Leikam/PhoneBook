@@ -17,7 +17,12 @@ public class PhoneBook {
     public static int index;
 
     public static void main(String[] args) {
-        //Добавить считывание ввода пользователя в цикле
+
+        // Предзаполняем книжку
+        add(phoneBook, "Тарковский Игорь Николаевич", "89650157766");
+        add(phoneBook, "Березянко Екатерина Сергеевна", "+79608003652");
+        add(phoneBook, "Тополева Ольга Федоровна", "81236547788");
+        add(phoneBook, "А Б В", "01112223344");
 
 
         String userFullName;
@@ -70,7 +75,9 @@ public class PhoneBook {
     }
 
     public static void add(String[][] book, String name, String number) {
-        //add logic
+        book[index][0] = name;
+        book[index][1] = number;
+        index++;
     }
 
     public static void list(String[][] book) {
