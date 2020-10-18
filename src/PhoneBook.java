@@ -118,7 +118,11 @@ public class PhoneBook {
         for (int i = 0; i < userCred.length; i++) {
             System.out.println(TERMINAL_PROMPTER[i]);
             String s = SCANNER.nextLine().trim();
-            userCred[i] = s.substring(0, 1).toUpperCase() + s.substring(1);
+            if (s.isBlank()) {
+                userCred[i] = "";
+            } else {
+                userCred[i] = s.substring(0, 1).toUpperCase() + s.substring(1);
+            }
         }
 
         return createFullName(userCred);
