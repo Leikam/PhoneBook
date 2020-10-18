@@ -7,6 +7,7 @@ public class PhoneBook {
     public static final String NAME = "NAME";
     public static final String PHONE = "PHONE";
 
+    public static final String NAME_ERROR_STRING = "__error__";
     public static final String STRING_DIVIDER = ",";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -14,7 +15,7 @@ public class PhoneBook {
     public static final String[] TERMINAL_PROMPTER = new String[] {
         "Введите фамилию:",
         "Введите имя:",
-        "Введите отчество:",
+        "Введите отчество (необзятельно):",
         };
     public static final Scanner SCANNER = new Scanner(System.in);
 
@@ -119,7 +120,12 @@ public class PhoneBook {
             System.out.println(TERMINAL_PROMPTER[i]);
             String s = SCANNER.nextLine().trim();
             if (s.isBlank()) {
-                userCred[i] = "";
+                /* Отчество (индекс 2) разрешаем пропускать */
+                if (i == 2) {
+                    userCred[i] = "";
+                } else {
+                    userCred[i] = NAME_ERROR_STRING;
+                }
             } else {
                 userCred[i] = s.substring(0, 1).toUpperCase() + s.substring(1);
             }
@@ -152,10 +158,11 @@ public class PhoneBook {
         return true;
     }
 
-    /** Проверка имени по количеству слов. Так себе проверка, но пока хватит */
+    /** Проверка имени по количеству слов (2 или 3, с отчеством). Так себе проверка, но пока хватит */
     public static boolean checkName(String name) {
-        if (name.split("\\s").length == 3) {
-            return true;
+        int length = name.split("\\s").length;
+        if (length > 1 && length < 4) {
+            return !name.contains(NAME_ERROR_STRING);
         }
 
         logError("Неверный формат имени. Ждем от вас инициалы в формате: Фамилия Имя Отчество");
